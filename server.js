@@ -11,7 +11,6 @@ dotenv.config({ quiet: true});
 const port = process.env.PORT || 5000;
 // const numCPUs = os.cpus().length;
 const numCPUs = Math.max(os.cpus().length - 1, 1);
-console.log('[CPU] ', numCPUs);
 
 if (cluster.isPrimary) {
   console.log(`[WORKER] Master ${process.pid} is running`);
@@ -21,13 +20,6 @@ if (cluster.isPrimary) {
   for (let i = 0; i < numCPUs; i++) {
     cluster.fork();
   }
-  
-  cluster.on("error", (err) => {
-    if (err.code === "EADDRINUSE") {
-      console.error(`Port ${PORT} already in use`);
-      process.exit(1);
-    }
-  });
 
   cluster.on("exit", (worker, code, signal) => {
     console.log(`[RESTART] Worker ${worker.process.pid} died`);
