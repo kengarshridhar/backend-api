@@ -1,0 +1,31 @@
+{
+  "name": "backend-v1",
+  "version": "1.0.0",
+  "description": "Backend API V1",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "start": "node server.js",
+    "test": "DOTENV_CONFIG_QUIET=true & nodemon -r dotenv/config server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "insta-nature"
+  },
+  "author": "shridhar kengar",
+  "license": "ISC",
+  "dependencies": {
+    "cluster": "^0.7.7",
+    "connect-mongo": "^6.0.0",
+    "dotenv": "^17.3.1",
+    "express": "^5.2.1",
+    "express-session": "^1.19.0",
+    "jsonwebtoken": "^9.0.3",
+    "module-alias": "^2.3.4",
+    "mongoose": "^9.2.4",
+    "multer": "^2.1.1"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.14"
+  }
+}
