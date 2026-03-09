@@ -1,6 +1,6 @@
-import jwt from "jsonwebtoken";
+import { verifyToken } from "../../config/jwt.js";
 
-export const verifyToken = (req, res, next) => {
+export const verifyAuthToken = (req, res, next) => {
     const token = req.headers.authorization?.split(" ")[1];
 
     if (!token) {
@@ -8,7 +8,7 @@ export const verifyToken = (req, res, next) => {
     }
 
     try {
-        const decode = jwt.verify(token, process.env.JWT_SECRET);
+        const decode = verifyToken(token);
 
         req.user = decode;
 
