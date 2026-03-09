@@ -1,5 +1,28 @@
-Backend Tree
+# Backend API 
+Create Backend for E-commerce, Blog, HRM, CRM, LMS.
 
+## Routes
+
+### Public Route
+
+```
+GET /users
+GET /user/:username
+POST /user/ 
+PATCH /user/:username
+DELETE /user/:username
+```
+
+### Auth Route
+```
+POST /api/auth/login [username & Password]
+```
+### Protected Route
+```
+comming soon
+```
+Backend Tree
+```
 backend/
 ├── config/
 │   ├── db/
@@ -58,3 +81,4 @@ backend/
 ├── .env
 ├── package.json
 └── README.md
+```
