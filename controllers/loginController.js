@@ -1,5 +1,5 @@
 import bcrypt from "bcryptjs";
-import jwt from "jsonwebtoken";
+import jwt from "../config/jwt";
 import User from "../models/mongo/User";
 
 export const loginUser = async (req, res ) => {
@@ -13,14 +13,7 @@ export const loginUser = async (req, res ) => {
 
         if(!match) { return res.status(401).json({ message: 'Invalid Password' }); }
 
-        const token = jwt.sign(
-            {
-                id: user._id,
-                role: user.role
-            },
-            process.env.JWT_SECRET,
-            { expiresIn: '1d'}
-        );
+        const token = jwt.generateToken(user);
 
         res.json({
             message: "Login Successfully",
