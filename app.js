@@ -5,6 +5,7 @@ import authRoutes from './routes/authRoutes.js';
 import fileRoutes from './routes/fileRoutes.js';
 import publicRoutes from './routes/publicRoutes.js'
 import userRoutes from './routes/userRoutes.js'
+import protectRoutes from './routes/protectRoutes.js'
 
 const app = express();
 app.use(express.json());
@@ -12,7 +13,7 @@ app.use(sessionMiddleware);
 
 // Use routes
 app.use("/", publicRoutes);
-app.use("/api/auth", authRoutes);
+app.use("/api/auth", authRoutes, protectRoutes);
 app.use("/api/files", fileRoutes);
 app.use("/users", userRoutes);
 
