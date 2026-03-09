@@ -15,9 +15,9 @@ const userSchema = new mongoose.Schema({
       "editor",
       "seo_editor",
       "analytics",
-      "customer"
+      "subscriber"
     ],
-    default: "customer"
+    default: "subscriber"
   }
 });
 
