@@ -1,29 +1,34 @@
 import bcrypt from "bcryptjs";
-import { generateToken } from "../config/jwt.js";
+import { generateToken, refreshToken } from "../config/jwt.js";
 import User from "../models/mongo/User.js";
 
 export const loginUser = async (req, res ) => {
-    try {
-        const { email, password } = req.body;
-        const user = await User.findOne({email});
-
-        if(!user) { return res.status(404).json({ message: 'User Not Found' }); }
-
-        const match = await bcrypt.compare(password, user.password);
-
+    const { email, password } = req.body;
+    
+    User.findOne({email}).select("+password")
+    .then((noUser) => {
+        if (!noUser) { return res.status(404).json({ message: 'User Not Found' }); }
+        return noUser;
+    })
+    .then((user) => {
+        const match = bcrypt.compare(password, user.password);
         if(!match) { return res.status(401).json({ message: 'Invalid Password' }); }
-
+        return user;
+    })
+    .then((user) => {
         const token = generateToken(user);
+        const refreshToken = refreshToken(user);
 
         res.json({
             message: "Login Successfully",
             token,
+            refreshToken,
             role: user.role
         });
-
-    } catch (err) {
+    })
+    .catch((err) => {
         res.status(500).json({ message: err.message });
-    }
+    })
 }
 
 export const registerUser = async (req, res) => {
@@ -36,7 +41,7 @@ export const registerUser = async (req, res) => {
                 message: "Email already registered"
             })
         }
-        // Register User
+        
         return bcrypt.genSalt(10)
     })
     .then((salt) => {
@@ -49,8 +54,6 @@ export const registerUser = async (req, res) => {
             password: passwdHash
         }
        
-        console.log('[body ', body);
-
         User.create( body )
     })
     .then((user) => {
