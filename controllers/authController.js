@@ -7,7 +7,7 @@ export const loginWithUsername = async (req, res) => {
   const user = await User.findOne({ username });
   console.log('[user] ',user);
   if (!user || user.otp !== otp){ 
-    return res.status(401).json({ error: "Invalid" });
+    return res.status(401).json({ error: "Invalid user or otp" });
   }
 
   const token = generateToken(user);
