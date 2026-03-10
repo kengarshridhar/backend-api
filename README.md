@@ -35,12 +35,14 @@ backend/
 ├── controllers/
 │   ├── authController.js
 │   ├── userController.js
+│   ├── loginController.js
 │   └── fileController.js
 │
 ├── middlewares/
 │   ├── auth/
 │   │   ├── jwtMiddleware.js
 │   │   ├── sessionMiddleware.js
+│   │   ├── rolePermission.js
 │   │   └── oauthMiddleware.js
 │   ├── validators/
 │   │   ├── loginValidator.js
@@ -59,6 +61,8 @@ backend/
 ├── routes/
 │   ├── authRoutes.js
 │   ├── userRoutes.js
+│   ├── publicRoutes.js
+│   ├── protectRoutes.js
 │   └── fileRoutes.js
 │
 ├── services/
