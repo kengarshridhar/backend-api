@@ -1,23 +1,31 @@
 import bcrypt from "bcryptjs";
-import { generateToken, refreshToken } from "../config/jwt.js";
+import { generateToken, generateRefreshToken } from "../config/jwt.js";
 import User from "../models/mongo/User.js";
 
 export const loginUser = async (req, res ) => {
-    const { email, password } = req.body;
+    // login with email or username 
+    // @parm identifier cantain email or username
+    const { identifier, password } = req.body;
     
-    User.findOne({email}).select("+password")
-    .then((noUser) => {
-        if (!noUser) { return res.status(404).json({ message: 'User Not Found' }); }
-        return noUser;
-    })
+    User.findOne({
+        $or: [
+            { email: identifier },
+            { username: identifier }
+        ]
+    }).select("+password")
     .then((user) => {
-        const match = bcrypt.compare(password, user.password);
-        if(!match) { return res.status(401).json({ message: 'Invalid Password' }); }
-        return user;
+        if (!user) { return res.status(404).json({ message: 'User Not Found' }); }
+        return bcrypt.compare(password, user.password)
+        .then((match) => {
+
+            if(!match) { return res.status(401).json({ message: 'Invalid Password' }); }
+            
+            return user;
+        });
     })
     .then((user) => {
         const token = generateToken(user);
-        const refreshToken = refreshToken(user);
+        const refreshToken = generateRefreshToken(user);
 
         res.json({
             message: "Login Successfully",
