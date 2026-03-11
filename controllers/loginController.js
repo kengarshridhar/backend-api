@@ -2,44 +2,7 @@ import bcrypt from "bcryptjs";
 import { generateToken, generateRefreshToken } from "../config/jwt.js";
 import User from "../models/mongo/User.js";
 
-export const loginUser = async (req, res ) => {
-    // login with email or username 
-    // @parm identifier cantain email or username
-    const { identifier, password } = req.body;
-    
-    User.findOne({
-        $or: [
-            { email: identifier },
-            { username: identifier }
-        ]
-    }).select("+password")
-    .then((user) => {
-        if (!user) { return res.status(404).json({ message: 'User Not Found' }); }
-        return bcrypt.compare(password, user.password)
-        .then((match) => {
-
-            if(!match) { return res.status(401).json({ message: 'Invalid Password' }); }
-            
-            return user;
-        });
-    })
-    .then((user) => {
-        const token = generateToken(user);
-        const refreshToken = generateRefreshToken(user);
-
-        res.json({
-            message: "Login Successfully",
-            token,
-            refreshToken,
-            role: user.role
-        });
-    })
-    .catch((err) => {
-        res.status(500).json({ message: err.message });
-    })
-}
-
-export const registerUser = async (req, res) => {
+export const registerUser = async ( req, res ) => {
     const { email, password } = req.body;
     
     await User.findOne({ email })
@@ -75,4 +38,75 @@ export const registerUser = async (req, res) => {
             message: err.message
         })
     })
+}
+
+export const loginUser = async ( req, res ) => {
+    // login with email or username 
+    // @parm identifier cantain email or username
+    const { identifier, password } = req.body;
+    
+    User.findOne({
+        $or: [
+            { email: identifier },
+            { username: identifier }
+        ]
+    }).select("+password")
+    .then((user) => {
+        if (!user) { return res.status(404).json({ message: 'User Not Found' }); }
+        return bcrypt.compare(password, user.password)
+        .then((match) => {
+
+            if(!match) { return res.status(401).json({ message: 'Invalid Password' }); }
+            
+            return user;
+        });
+    })
+    .then((user) => {
+        const token = generateToken(user);
+        const refreshToken = generateRefreshToken(user);
+
+        /* Create Session */
+        req.session.user = {
+            id: user._id,
+            email: user.email,
+            username: user.username,
+            role: user.role
+        };
+
+        res.json({
+            message: "Login Successfully",
+            token,
+            refreshToken,
+            role: user.role,
+            sessionId: req.sessionID
+        });
+    })
+    .catch((err) => {
+        res.status(500).json({ message: err.message });
+    })
+}
+
+export const loginCheck = async ( req, res ) => {
+    if (!req.session.user) {
+        return res.status(401).json({
+            message: "Not Logged In"
+        });
+    }
+
+    res.json(req.session.user);
+}
+
+export const logoutUser = async ( req, res ) => {
+    req.session.destroy((err) => {
+
+        if (err) {
+        return res.status(500).json({
+            message: "Logout Failed"
+        });
+        }
+
+        res.json({
+        message: "Logout Successfully"
+        });
+    });
 }
