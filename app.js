@@ -7,6 +7,10 @@ import publicRoutes from './routes/publicRoutes.js'
 import userRoutes from './routes/userRoutes.js'
 import protectRoutes from './routes/protectRoutes.js'
 
+// ecom routes
+import categoryRoute from './routes/ecom/categoryRoutes.js'
+import productRoute from './routes/ecom/productRoutes.js'
+
 const app = express();
 app.use(express.json());
 app.use(sessionMiddleware);
@@ -16,5 +20,9 @@ app.use("/", publicRoutes);
 app.use("/api/auth", authRoutes, protectRoutes);
 app.use("/api/files", fileRoutes);
 app.use("/users", userRoutes);
+
+// ecom route
+app.use("/product", productRoute);
+app.use("/category", categoryRoute);
 
 export default app;
