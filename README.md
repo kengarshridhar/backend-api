@@ -17,6 +17,24 @@ DELETE /user/:username
 ```
 POST /api/auth/login [username & Password]
 ```
+### Product Routes
+
+```
+GET /product
+GET /product/:id
+POST /product/add 
+PATCH /product/:id
+DELETE /product/:id
+```
+### Category Routes
+
+```
+GET /category
+GET /category/:id
+POST /category/add 
+PATCH /category/:id
+DELETE /category/:id
+```
 ### Protected Route
 ```
 comming soon
@@ -53,12 +71,17 @@ backend/
 ├── models/
 │   ├── mongo/
 │   │   ├── User.js
+│   │   ├── Category.js
+│   │   ├── Product.js
 │   │   └── Session.js
 │   ├── postgres/
 │   │   ├── LoginData.js
 │   │   └── AuditLog.js
 │
 ├── routes/
+│   ├── ecom/
+│   │   ├── categoryRoutes.js
+│   │   └── productRoutes.js
 │   ├── authRoutes.js
 │   ├── userRoutes.js
 │   ├── publicRoutes.js
