@@ -1,8 +1,9 @@
 import express from "express";
-import { getAllProduct, getSingleProduct, addProduct, updateProduct, deleteProduct } from "../../controllers/ecom/productController";
+import { getAllProduct, getSingleProduct, addProduct, updateProduct, deleteProduct } from "../../controllers/ecom/productController.js";
 import authMiddleware from "../../middlewares/auth/authMiddleware.js";
 import authorizeRoles from "../../middlewares/auth/roleMiddleware.js";
-import activityLogger from "../../middlewares/auth/activityLogger";
+import activityLogger from "../../middlewares/auth/activityLogger.js";
+
 
 
 
@@ -27,7 +28,7 @@ router.put("/:id",
   authMiddleware,
   authorizeRoles("admin", "super-admin", "editor"),
   activityLogger,
-  updateProduct());
+  updateProduct);
 
 /* Delete Product */
 router.delete("/:id", 
