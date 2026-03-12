@@ -1,85 +1,39 @@
 import express from "express";
-import Product from "../../models/mongo/Product.js";
+import { getAllProduct, getSingleProduct, addProduct, updateProduct, deleteProduct } from "../../controllers/ecom/productController";
+import authMiddleware from "../../middlewares/auth/authMiddleware.js";
+import authorizeRoles from "../../middlewares/auth/roleMiddleware.js";
+import activityLogger from "../../middlewares/auth/activityLogger";
+
+
 
 const router = express.Router();
 
 /* Create Product */
-router.post("/add", (req, res) => {
-
-  Product.create(req.body)
-    .then((product) => {
-      res.status(201).json({
-        message: "Product Created",
-        data: product
-      });
-    })
-    .catch((err) => {
-      res.status(500).json({ message: err.message });
-    });
-
-});
+router.post("/add",
+  authMiddleware,
+  authorizeRoles("admin", "super-admin", "editor"),
+  activityLogger,
+  addProduct
+);
 
 /* Get All Products */
-router.get("/", (req, res) => {
-
-  Product.find()
-    .populate("category", "name slug")
-    .then((products) => {
-      res.json(products);
-    })
-    .catch((err) => {
-      res.status(500).json({ message: err.message });
-    });
-
-});
+router.get("/", getAllProduct);
 
 /* Get Single Product */
-router.get("/:id", (req, res) => {
-
-  Product.findById(req.params.id)
-    .populate("category", "name slug")
-    .then((product) => {
-
-      if (!product) {
-        return res.status(404).json({ message: "Product not found" });
-      }
-
-      res.json(product);
-
-    })
-    .catch((err) => {
-      res.status(500).json({ message: err.message });
-    });
-
-});
+router.get("/:id", getSingleProduct);
 
 /* Update Product */
-router.put("/:id", (req, res) => {
-
-  Product.findByIdAndUpdate(req.params.id, req.body, { new: true })
-    .then((product) => {
-      res.json({
-        message: "Product Updated",
-        data: product
-      });
-    })
-    .catch((err) => {
-      res.status(500).json({ message: err.message });
-    });
-
-});
+router.put("/:id",
+  authMiddleware,
+  authorizeRoles("admin", "super-admin", "editor"),
+  activityLogger,
+  updateProduct());
 
 /* Delete Product */
-router.delete("/:id", (req, res) => {
-
-  Product.findByIdAndDelete(req.params.id)
-    .then(() => {
-      res.json({ message: "Product Deleted" });
-    })
-    .catch((err) => {
-      res.status(500).json({ message: err.message });
-    });
-
-});
+router.delete("/:id", 
+  authMiddleware,
+  authorizeRoles("admin", "super-admin", "editor"),
+  activityLogger,
+  deleteProduct);
 
 export default router;
