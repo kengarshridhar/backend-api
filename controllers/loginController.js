@@ -62,6 +62,9 @@ export const loginUser = async ( req, res ) => {
         });
     })
     .then((user) => {
+
+        if (!user || res.headersSent ) return;
+
         const token = generateToken(user);
         const refreshToken = generateRefreshToken(user);
 
@@ -82,7 +85,10 @@ export const loginUser = async ( req, res ) => {
         });
     })
     .catch((err) => {
-        res.status(500).json({ message: err.message });
+        if (!res.headersSent) {
+            res.status(500).json({ message1: err.message });
+        }
+            res.status(500).json({ message2: err.message });
     })
 }
 
